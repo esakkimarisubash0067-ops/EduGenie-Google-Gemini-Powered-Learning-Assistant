@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGenie: Google Gemini Powered Learning Assistant</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f9f9f9; color: #333; }
+        h1 { color: #2c3e50; }
+        .container { max-width: 800px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input[type="text"] { width: 70%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 15px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        .result-box { margin-top: 20px; padding: 15px; background: #eef2f5; border-left: 5px solid #007bff; border-radius: 4px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>EduGenie: Google Gemini Powered Learning Assistant</h1>
+    <p>Your AI-powered companion for Q&A, Summarization, and Quizzes!</p>
+
+    <h3>Select AI Models & Features</h3>
+    <ul>
+        <li><strong>Gemini 1.5 Pro (via API):</strong> Used for Q&A, summarization, quiz generation, and learning paths.</li>
+        <li><strong>LaMini-Flan-T5-783M (local):</strong> Used for concept explanation.</li>
+    </ul>
+
+    <div style="margin-top: 20px;">
+        <input type="text" id="topicInput" placeholder="Enter a study topic or question...">
+        <button onclick="generateNotes()">Generate Notes</button>
+    </div>
+
+    <h3>Generated Study Material:</h3>
+    <div id="output" class="result-box">Notes will appear here...</div>
+</div>
+
+<script>
+    async function generateNotes() {
+        const topic = document.getElementById("topicInput").value;
+        const outputDiv = document.getElementById("output");
+        
+        outputDiv.innerText = "Generating notes...";
+
+        try {
+            const response = await fetch("/explain", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ topic: topic })
+            });
+
+            const data = await response.json();
+            
+            // Displays exact response key or fallback text
+            outputDiv.innerText = data.notes || data.result || "No output returned.";
+        } catch (error) {
+            outputDiv.innerText = "Error generating notes. Please try again.";
+            console.error(error);
+        }
+    }
+</script>
+
+</body>
+</html>
